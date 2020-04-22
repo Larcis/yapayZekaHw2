@@ -10,6 +10,7 @@
 </head>
 
 <body>
+    <script src="geneticAlgorithm.js"></script>
     <script src="maze.js"></script>
     <script src="sketch.js"></script>
     <div class="container">
@@ -22,7 +23,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">Maze Size (N)</span>
                         </div>
-                        <input type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                        <input id="maze_size" type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
                     </div>
                 </div>
 
@@ -90,11 +91,13 @@
             </div>
 
         </div>
+        <br>
 
         <div id="maze" class="text-center">
         </div>
+        <br>
 
-        <div id="input">
+        <div id="output">
 
             <div class="row">
 

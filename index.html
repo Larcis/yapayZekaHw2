@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="p5.js"></script>
     <script src="p5.sound.min.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
@@ -9,7 +10,175 @@
 </head>
 
 <body>
+    <script src="maze.js"></script>
     <script src="sketch.js"></script>
+    <div class="container">
+        <div id="input">
+
+            <div class="row">
+
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Maze Size (N)</span>
+                        </div>
+                        <input type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1"># of Obstacle (K)</span>
+                        </div>
+                        <input type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Step Size (M)</span>
+                        </div>
+                        <input type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+
+
+
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Timeout</span>
+                        </div>
+                        <input type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Population Size</span>
+                        </div>
+                        <input type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Probability of Mutation</span>
+                        </div>
+                        <input type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+
+                <div class="col">
+                    <select class="form-control">
+                    <option>Fitness Function</option>
+                  </select>
+                </div>
+
+                <div class="col">
+                    <button type="button" class="btn btn-primary btn-block">Solve</button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div id="maze" class="text-center">
+        </div>
+
+        <div id="input">
+
+            <div class="row">
+
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Maze Size (N)</span>
+                        </div>
+                        <input type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1"># of Obstacle (K)</span>
+                        </div>
+                        <input type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Step Size (M)</span>
+                        </div>
+                        <input type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+
+
+
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Timeout</span>
+                        </div>
+                        <input type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Population Size</span>
+                        </div>
+                        <input type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Probability of Mutation</span>
+                        </div>
+                        <input type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+
+                <div class="col">
+                    <select class="form-control">
+                  <option>Fitness Function</option>
+                </select>
+                </div>
+
+                <div class="col">
+                    <button type="button" class="btn btn-primary btn-block">Solve</button>
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <!-- <div class="form-group">
+        <label for="mazeSize"><br>Enter Maze Size:</label>
+        <input type="number" class="form-control" placeholder="Enter Maze Size(N)" id="mazeSize" min="0" max="200">
+    </div> -->
 
 </body>
 

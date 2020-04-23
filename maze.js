@@ -140,20 +140,26 @@ function euclid_ff(ind) {
 function usefull_ff(ind) {
     let xy = [1, 1];
     let max = 0;
+    let currently_visited = {};
+    let current_score = 1;
     for (let i = 0; i < ind.length; i++) {
         xy = step(ind[i], xy);
+        current_score = N * 2 ** (1 / 2) - euclid(...xy) //+ 3 / (i + 1);
+        if (grid[index(...xy)].type == CELL_TYPES.FINISH)
+            return 999999;
         if (grid[index(...xy)].type == CELL_TYPES.WALL ||
             grid[index(...xy)].type == CELL_TYPES.START ||
-            grid[index(...xy)].type == CELL_TYPES.FINISH) {
+            currently_visited[xy[0] + "_" + xy[1]]) {
             return max;
         }
-        grid[index(...xy)].type = CELL_TYPES.VISITED;
-        let current_score = 1 / (euclid(...xy)) + 1 / (i + 1);
+        //grid[index(...xy)].type = CELL_TYPES.VISITED;
+        currently_visited[xy[0] + "_" + xy[1]] = true;
+        //let current_score = N * 2 ** (1 / 2) - euclid(...xy) + 1 / (i + 1); //2 / (euclid(...xy) + 1) + 1 / (i + 1);
         if (current_score > max) {
             max = current_score;
         }
     }
-    return max;
+    return current_score;
 }
 
 function generate_template_maze() {
@@ -174,14 +180,14 @@ function generate_template_maze() {
 function start_solve() {
     //TODO read params from input boxes;
     if (current_state != STATES.TAKE_INPUT) return;
-    N = 10;
-    K = 3;
+    N = 20;
+    K = 10;
     w = 600 / (N + 2);
     generate_template_maze();
     generate_random_obstacles()
     current_state = STATES.SOLVE;
     GA = new GeneticAlgorithm({
-        mutation_probability: 0.3,
+        mutation_probability: 0.4,
         timeout: 999999,
         population_size: 100,
         fitness_function: usefull_ff,
@@ -194,6 +200,25 @@ function start_solve() {
 }
 
 start_solve();
+
+function getValuesFromUI() {
+    let N = document.getElementById("maze_size").value;
+    let K = document.getElementById("obstacleNumber").value;
+    let M = document.getElementById("stepSize").value;
+    let timeout = document.getElementById("timeout").value;
+    let populationSize = document.getElementById("populationSize").value;
+    let mutationProbability = document.getElementById("mutationProbability").value;
+    if (isNaN(N) || isNaN(K) || isNaN(M) || isNaN(timeout) ||  isNaN(populationSize) || isNaN(mutationProbability)) {
+        alert("Please Enter Valid input");
+        return;
+    }
+
+    alert(N + K + M + timeout + populationSize + mutationProbability);
+}
+
+function solveButtonClicked() {
+    getValuesFromUI();
+}
 
 /*console.log("population: ", GA.population);
 console.log("crossover: ", GA.population[0], GA.population[1], GA.reproduce(GA.population[0], GA.population[1]));

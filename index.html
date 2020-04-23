@@ -10,9 +10,7 @@
 </head>
 
 <body>
-    <script src="geneticAlgorithm.js"></script>
-    <script src="maze.js"></script>
-    <script src="sketch.js"></script>
+
     <div class="container">
         <div id="input">
 
@@ -32,7 +30,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1"># of Obstacle (K)</span>
                         </div>
-                        <input type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                        <input id="obstacleNumber" type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
                     </div>
                 </div>
 
@@ -41,7 +39,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">Step Size (M)</span>
                         </div>
-                        <input type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                        <input id="stepSize" type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
                     </div>
                 </div>
 
@@ -52,7 +50,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">Timeout</span>
                         </div>
-                        <input type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                        <input id="timeout" type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
                     </div>
                 </div>
 
@@ -65,7 +63,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">Population Size</span>
                         </div>
-                        <input type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                        <input id="populationSize" type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
                     </div>
                 </div>
 
@@ -74,18 +72,18 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">Probability of Mutation</span>
                         </div>
-                        <input type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                        <input id="mutationProbability" type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
                     </div>
                 </div>
 
                 <div class="col">
                     <select class="form-control">
-                    <option>Fitness Function</option>
+                    <option>Type</option>
                   </select>
                 </div>
 
                 <div class="col">
-                    <button type="button" class="btn btn-primary btn-block">Solve</button>
+                    <button type="button" onclick="solveButtonClicked()" class="btn btn-primary btn-block">Solve</button>
                 </div>
 
             </div>
@@ -182,7 +180,9 @@
         <label for="mazeSize"><br>Enter Maze Size:</label>
         <input type="number" class="form-control" placeholder="Enter Maze Size(N)" id="mazeSize" min="0" max="200">
     </div> -->
-
+    <script src="geneticAlgorithm.js"></script>
+    <script src="maze.js"></script>
+    <script src="sketch.js"></script>
 </body>
 
 </html>

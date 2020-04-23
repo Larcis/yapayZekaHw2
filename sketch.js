@@ -8,7 +8,7 @@ let drawFlag = true;
 
 function draw() {
     background(31);
-    frameRate(50);
+    frameRate(100);
     if (drawFlag) {
         if (current_state == STATES.SOLVE) {
             let res = GA.create_next_generation();
@@ -18,12 +18,15 @@ function draw() {
                 drawResult(res);
             }
         }
+
     } else {
         clearVisitedCells();
     }
     drawCells();
-    drawFlag = !drawFlag;
+    clearVisitedCells();
+    // drawFlag = !drawFlag;
 }
+let generation_count;
 
 function drawCells() {
     grid[index(1, 1)].type = CELL_TYPES.START;
@@ -31,7 +34,10 @@ function drawCells() {
     for (var i = 0; i < grid.length; i++) {
         grid[i].show();
     }
-    text(frameCount, width / 2, height / 2);
+    if (current_state == STATES.SOLVE) {
+        generation_count = frameCount;
+    }
+    text(generation_count, width / 2, height / 2);
 
 }
 

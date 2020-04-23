@@ -144,13 +144,13 @@ function usefull_ff(ind) {
     let current_score = 1;
     for (let i = 0; i < ind.length; i++) {
         xy = step(ind[i], xy);
-        current_score = N * 2 ** (1 / 2) - euclid(...xy) //+ 3 / (i + 1);
+        current_score = N * 2 ** (1 / 2) - euclid(...xy) + 3 / (i + 1);
         if (grid[index(...xy)].type == CELL_TYPES.FINISH)
             return 999999;
         if (grid[index(...xy)].type == CELL_TYPES.WALL ||
             grid[index(...xy)].type == CELL_TYPES.START ||
             currently_visited[xy[0] + "_" + xy[1]]) {
-            return max;
+            return current_score;
         }
         //grid[index(...xy)].type = CELL_TYPES.VISITED;
         currently_visited[xy[0] + "_" + xy[1]] = true;
@@ -187,7 +187,7 @@ function start_solve() {
     generate_random_obstacles()
     current_state = STATES.SOLVE;
     GA = new GeneticAlgorithm({
-        mutation_probability: 0.4,
+        mutation_probability: 0.6,
         timeout: 999999,
         population_size: 100,
         fitness_function: usefull_ff,

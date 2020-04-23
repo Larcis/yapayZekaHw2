@@ -6,6 +6,7 @@ function GeneticAlgorithm(props) {
     this.fitness_function = props.fitness_function;
     this.individual_length = props.individual_length;
     this.population = [];
+    this.probabilities = [];
     this.start_time = 0;
     this.max_score = 0;
     this.best_fit_ind = null;
@@ -18,22 +19,13 @@ function GeneticAlgorithm(props) {
             this.population.push(new_ind);
         }
         this.start_time = Date.now();
+        this.create_acumulate_array();
     };
 
     this.create_next_generation = function() {
         /*if (this.population.length < 1 ||
             this.start_time == 0 ||
             current_state != STATES.SOLVE) return null;*/
-        let best_ind = "";
-        let ms = 0;
-        for (let i = 0; i < this.population.length; i++) {
-            let current_fit = this.fitness_function(this.population[i]);
-            if (current_fit > ms) {
-                this.max_score = ms = current_fit;
-                best_ind = this.population[i];
-            }
-        }
-        this.draw_best_fit(best_ind);
 
         let new_population = [];
         for (let i in this.population) {
@@ -43,6 +35,7 @@ function GeneticAlgorithm(props) {
             if (Math.random() < this.mutation_probability) {
                 child = this.mutate(child);
             }
+            //TODO random selection duzeltıldıkten sonra burası kaldırılıp denenecek 
             let fx = this.fitness_function(x);
             let fy = this.fitness_function(y);
             let fc = this.fitness_function(child);
@@ -55,7 +48,17 @@ function GeneticAlgorithm(props) {
             }
         }
         this.population = new_population;
-
+        this.create_acumulate_array();
+        let best_ind = "";
+        let ms = 0;
+        for (let i = 0; i < this.population.length; i++) {
+            let current_fit = this.fitness_function(this.population[i]);
+            if (current_fit > ms) {
+                this.max_score = ms = current_fit;
+                best_ind = this.population[i];
+            }
+        }
+        this.draw_best_fit(best_ind);
         if (this.max_score == 999999 || (Date.now() - this.start_time) > this.timeout)
             return best_ind; //this.best_fit_ind;
         return null;
@@ -71,27 +74,27 @@ function GeneticAlgorithm(props) {
         }
 
     }
-    this.random_selection = function() {
-        let probabilities = [];
+
+    this.create_acumulate_array = function() {
+        this.probabilities = [];
         let sum = 0;
         for (let i = 0; i < this.population.length; i++) {
             let current_fit = this.fitness_function(this.population[i]);
-            probabilities.push(current_fit);
+            this.probabilities.push(current_fit);
             sum += current_fit;
         }
-        for (let i = 0; i < probabilities.length; i++) {
-            probabilities[i] /= sum;
+        for (let i = 0; i < this.probabilities.length; i++) {
+            this.probabilities[i] /= sum;
         }
-        probabilities.sort();
-
+        this.probabilities.sort();
+        //TODO random selection duzgun degıl, duzeltılmelı
+    }
+    this.random_selection = function() {
         let rnd = Math.random();
-
-        // console.log(probabilities, rnd);
-        if (probabilities[0] >= rnd)
-            return this.population[0];
-        for (let i = 1; i < probabilities.length; i++) {
-            probabilities[i] += probabilities[i - 1];
-            if (probabilities[i] >= rnd)
+        let acc = 0;
+        for (let i = 0; i < this.probabilities.length; i++) {
+            acc += this.probabilities[i];
+            if (acc >= rnd)
                 return this.population[i];
         }
         return this.population[0];

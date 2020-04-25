@@ -6,7 +6,6 @@ function randgen(start, end) {
     return Math.round(Math.random() * (end - start)) + start;
 };
 
-
 let N; // Maze satır sütun değişkeni
 let K; // Engel Sayısı
 let w; // Bir cell büyüklüğü
@@ -21,7 +20,6 @@ let colors = [
     [199, 0, 57],
     [24, 176, 176]
 ];
-
 
 let STATES = {
     TAKE_INPUT: 0,
@@ -38,7 +36,6 @@ let CELL_TYPES = {
     FINISH: 4,
     PATH: 5
 };
-
 
 function index(i, j) {
     if (i < 0 || j < 0 || i > N + 1 || j > N + 1) {
@@ -87,16 +84,16 @@ function generate_random_obstacles() {
 function step(dir, xy) {
     switch (dir) {
         case "1": // Left
-            if (xy[1] > 1) xy[1]--;
+            xy[1]--;
             break;
         case "2": // Up
-            if (xy[0] > 1) xy[0]--;
+            xy[0]--;
             break;
         case "3": // Right
-            if (xy[1] <= N) xy[1]++;
+            xy[1]++;
             break;
         case "4": // Down
-            if (xy[0] <= N) xy[0]++;
+            xy[0]++;
             break;
     }
     return xy;
@@ -105,6 +102,10 @@ function step(dir, xy) {
 function euclid(x, y) {
     // console.log("N:", N, "x,", x, "y", y, "    ", (N - x) ** 2, (N - y) ** 2, "WTF", Math.sqrt(((N - x) ** 2) + ((N - y) ** 2)));
     return Math.sqrt(((N - x) ** 2) + ((N - y) ** 2));
+}
+
+function manhattan(x1, y1, x2, y2) {
+    return Math.abs(x1 - x2) + Math.abs(y1 - y2);
 }
 
 function until_wall_ff(ind) {
@@ -139,27 +140,45 @@ function euclid_ff(ind) {
 
 function usefull_ff(ind) {
     let xy = [1, 1];
-    let max = 0;
     let currently_visited = {};
-    let current_score = 1;
-    for (let i = 0; i < ind.length; i++) {
+    let i = 0;
+    for (i = 0; i < ind.length; i++) {
         xy = step(ind[i], xy);
-        current_score = N * 2 ** (1 / 2) - euclid(...xy) + 3 / (i + 1);
         if (grid[index(...xy)].type == CELL_TYPES.FINISH)
             return 999999;
         if (grid[index(...xy)].type == CELL_TYPES.WALL ||
             grid[index(...xy)].type == CELL_TYPES.START ||
-            currently_visited[xy[0] + "_" + xy[1]]) {
-            return current_score;
+            currently_visited[xy[0] + "_" + xy[1]]
+        ) {
+            return manhattan(...xy, 1, 1) + manhattan(...xy, N, N) / (i + 1); //N * 2 - euclid(...xy) + 3 / (i + 1);
         }
-        //grid[index(...xy)].type = CELL_TYPES.VISITED;
         currently_visited[xy[0] + "_" + xy[1]] = true;
-        //let current_score = N * 2 ** (1 / 2) - euclid(...xy) + 1 / (i + 1); //2 / (euclid(...xy) + 1) + 1 / (i + 1);
-        if (current_score > max) {
-            max = current_score;
+    }
+    return manhattan(...xy, 1, 1) + manhattan(...xy, N, N) / (i + 1); //N * 2 - euclid(...xy) + 3 / (i + 1);;
+}
+
+function usefull_ff2(ind) {
+    let xy = [1, 1];
+    let i = 0;
+    let idx;
+    for (i = 0; i < ind.length; i++) {
+        xy = step(ind[i], xy);
+        idx = index(...xy);
+        if (idx != -1) {
+            if (grid[idx].type == CELL_TYPES.FINISH) {
+                console.log("asd");
+                return 666666;
+            }
+            if (grid[idx].type == CELL_TYPES.WALL ||
+                grid[idx].type == CELL_TYPES.START
+            ) {
+                return manhattan(...xy, 1, 1) / (i + 1) + 2 * N - manhattan(...xy, N, N);
+            }
+        } else {
+            return manhattan(...xy, 1, 1) / (i + 1) + 2 * N - manhattan(...xy, N, N);
         }
     }
-    return current_score;
+    return manhattan(...xy, 1, 1) / (i + 1) + 2 * N - manhattan(...xy, N, N);
 }
 
 function generate_template_maze() {
@@ -181,17 +200,17 @@ function start_solve() {
     //TODO read params from input boxes;
     if (current_state != STATES.TAKE_INPUT) return;
     N = 20;
-    K = 10;
+    K = 20;
     w = 600 / (N + 2);
     generate_template_maze();
     generate_random_obstacles()
     current_state = STATES.SOLVE;
     GA = new GeneticAlgorithm({
-        mutation_probability: 0.6,
+        mutation_probability: 0.3,
         timeout: 999999,
-        population_size: 100,
-        fitness_function: usefull_ff,
-        individual_length: 3 * N
+        population_size: 1000,
+        fitness_function: usefull_ff2,
+        individual_length: 4 * N
 
     });
     GA.create_first_generation();
@@ -220,6 +239,40 @@ function solveButtonClicked() {
     getValuesFromUI();
 }
 
+function makeChart() {
+    let miktar = [72, 52, 46, 35, 33];
+    let markalar = ['Samsung', 'Huawei', 'Apple', 'Xiaomi', 'Oppo'];
+    let canvas = document.getElementById('chart');
+
+    let graphic = new Chart(canvas, {
+        type: 'line',
+        data: {
+            labels: markalar,
+            datasets: [{
+                label: '2018Q3 Telefon Satışı',
+                data: miktar,
+                backgroundColor: [
+                    "rgba(255, 99, 132, 0.2)",
+                    "rgba(54, 162, 235, 0.2)",
+                    "rgba(255, 206, 86, 0.2)",
+                    "rgba(75, 192, 192, 0.2)",
+                    "rgba(153, 102, 255, 0.2)"
+                ],
+                borderColor: [
+                    "rgba(255, 99, 132, 1)",
+                    "rgba(54, 162, 235, 1)",
+                    "rgba(255, 206, 86, 1)",
+                    "rgba(75, 192, 192, 1)",
+                    "rgba(153, 102, 255, 1)"
+                ],
+                borderWidth: 1
+            }],
+
+        }
+    });
+}
+
+makeChart();
 /*console.log("population: ", GA.population);
 console.log("crossover: ", GA.population[0], GA.population[1], GA.reproduce(GA.population[0], GA.population[1]));
 console.log("mutation: ", GA.mutate(GA.population[0]));

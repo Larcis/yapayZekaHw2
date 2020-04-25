@@ -8,7 +8,7 @@ let drawFlag = true;
 
 function draw() {
     background(31);
-    frameRate(100);
+    frameRate(30);
     if (drawFlag) {
         if (current_state == STATES.SOLVE) {
             let res = GA.create_next_generation();

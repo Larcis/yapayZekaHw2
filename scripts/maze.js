@@ -299,3 +299,5 @@ function makeChart(score_array) {
         }
     });
 }
+
+clearChart();

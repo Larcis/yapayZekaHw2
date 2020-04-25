@@ -22,7 +22,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">Maze Size (N)</span>
                         </div>
-                        <input id="maze_size" type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                        <input id="maze_size" type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1" value="20">
                     </div>
                 </div>
 
@@ -31,7 +31,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1"># of Obstacle (K)</span>
                         </div>
-                        <input id="obstacleNumber" type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                        <input id="obstacleNumber" type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1" value="10">
                     </div>
                 </div>
 
@@ -40,18 +40,16 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">Step Size (M)</span>
                         </div>
-                        <input id="stepSize" type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                        <input id="stepSize" type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1" value="100">
                     </div>
                 </div>
-
-
 
                 <div class="col">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">Timeout</span>
                         </div>
-                        <input id="timeout" type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                        <input id="timeout" type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1" value="99999">
                     </div>
                 </div>
 
@@ -64,27 +62,30 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">Population Size</span>
                         </div>
-                        <input id="populationSize" type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                        <input id="populationSize" type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1" value="100">
                     </div>
                 </div>
 
                 <div class="col">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">Probability of Mutation</span>
+                            <span class="input-group-text" id="basic-addon1">Prob. of Mutation</span>
                         </div>
-                        <input id="mutationProbability" type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                        <input id="mutationProbability" type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1" value="0.5">
                     </div>
                 </div>
 
                 <div class="col">
-                    <select class="form-control">
-                    <option>Type</option>
-                  </select>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Keep Alive Rate</span>
+                        </div>
+                        <input id="keepAliveRate" type="number" class="form-control" aria-label="Username" aria-describedby="basic-addon1" value="0.2">
+                    </div>
                 </div>
 
                 <div class="col">
-                    <button type="button" onclick="solveButtonClicked()" class="btn btn-primary btn-block">Solve</button>
+                    <button id="button" type="button" onclick="solveButtonClicked()" class="btn btn-primary btn-block">Solve  &#128640;</button>
                 </div>
 
             </div>
@@ -97,17 +98,11 @@
         <br>
 
         <div id="output">
-
             <canvas id="chart" width="800" height="300"></canvas>
-
         </div>
 
     </div>
 
-    <!-- <div class="form-group">
-        <label for="mazeSize"><br>Enter Maze Size:</label>
-        <input type="number" class="form-control" placeholder="Enter Maze Size(N)" id="mazeSize" min="0" max="200">
-    </div> -->
     <script src="scripts/geneticAlgorithm.js"></script>
     <script src="scripts/maze.js"></script>
     <script src="scripts/sketch.js"></script>

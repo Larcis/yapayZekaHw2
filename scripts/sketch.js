@@ -1,44 +1,57 @@
 function setup() {
     var canvas = createCanvas(600, 600);
     canvas.parent("maze");
-    textSize(15);
-    textAlign(CENTER);
+    textSize(20);
+    textAlign(CENTER, TOP);
 }
-let drawFlag = true;
 
 function draw() {
     background(31);
     frameRate(30);
-    if (drawFlag) {
-        if (current_state == STATES.SOLVE) {
-            let res = GA.create_next_generation();
-            if (res) {
-                console.log("RESULT:" + res);
-                current_state = STATES.SHOW_OUTPUT;
-                drawResult(res);
-            }
+    if (current_state == STATES.SOLVE) {
+        let res = GA.create_next_generation();
+        if (res) {
+            console.log("RESULT:" + res);
+            setState(STATES.SHOW_OUTPUT);
+            drawResult(res);
+            makeChart(GA.graphic_data);
         }
-
-    } else {
+        drawCells();
         clearVisitedCells();
+    } else if (current_state == STATES.SHOW_OUTPUT) {
+        drawCells();
+    } else if (current_state == STATES.TAKE_INPUT) {
+        draw_take_input();
     }
-    drawCells();
-    clearVisitedCells();
-    // drawFlag = !drawFlag;
 }
-let generation_count;
+let generation_count = 0;
 
 function drawCells() {
+    stroke(119);
+    strokeWeight(1);
     grid[index(1, 1)].type = CELL_TYPES.START;
     grid[index(N, N)].type = CELL_TYPES.FINISH;
     for (var i = 0; i < grid.length; i++) {
         grid[i].show();
     }
     if (current_state == STATES.SOLVE) {
-        generation_count = frameCount;
+        generation_count++;
     }
-    text(generation_count, width / 2, height / 2);
+    fill(234, 98, 39);
+    strokeWeight(3);
+    stroke(255);
+    text("Generation Count: " + generation_count, 0, 2, width);
+}
 
+function draw_take_input() {
+    background(255)
+    textSize(20);
+    textAlign(CENTER);
+    fill(234, 98, 39);
+    stroke(0);
+    strokeWeight(0.31);
+    text("Taking Input", width / 2, height / 2);
+    generation_count = 0;
 }
 
 function clearVisitedCells() {

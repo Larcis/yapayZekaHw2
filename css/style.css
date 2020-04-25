@@ -20,6 +20,10 @@ body {
     border-top-right-radius: 16pt 16pt;
 }
 
+#chart {
+    max-height: 366px !important;
+}
+
 .container {
     max-width: 1600px;
     background-color: #393e46;

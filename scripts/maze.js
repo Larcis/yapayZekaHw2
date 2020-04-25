@@ -1,7 +1,3 @@
-String.prototype.replaceAt = function(index, replacement) {
-    return this.substr(0, index) + replacement + this.substr(index + 1, replacement.length);
-}
-
 function randgen(start, end) {
     return Math.round(Math.random() * (end - start)) + start;
 };
@@ -38,9 +34,7 @@ let CELL_TYPES = {
 };
 
 function index(i, j) {
-    if (i < 0 || j < 0 || i > N + 1 || j > N + 1) {
-        return -1;
-    }
+    if (i < 0 || j < 0 || i > N + 1 || j > N + 1) { return -1; }
     return i + j * (N + 2);
 }
 
@@ -100,7 +94,6 @@ function step(dir, xy) {
 }
 
 function euclid(x, y) {
-    // console.log("N:", N, "x,", x, "y", y, "    ", (N - x) ** 2, (N - y) ** 2, "WTF", Math.sqrt(((N - x) ** 2) + ((N - y) ** 2)));
     return Math.sqrt(((N - x) ** 2) + ((N - y) ** 2));
 }
 
@@ -166,7 +159,6 @@ function usefull_ff2(ind) {
         idx = index(...xy);
         if (idx != -1) {
             if (grid[idx].type == CELL_TYPES.FINISH) {
-                console.log("asd");
                 return 666666;
             }
             if (grid[idx].type == CELL_TYPES.WALL ||
@@ -182,8 +174,9 @@ function usefull_ff2(ind) {
 }
 
 function generate_template_maze() {
-    for (let i = 0; i <= N + 1; i++) {
-        for (let j = 0; j <= N + 1; j++) {
+    grid = [];
+    for (let i = 0; i <= (N + 1); i++) {
+        for (let j = 0; j <= (N + 1); j++) {
             let cell = new Cell(i, j);
             if (i == 0 || j == 0 || i == N + 1 || j == N + 1)
                 cell.type = CELL_TYPES.WALL;
@@ -192,33 +185,31 @@ function generate_template_maze() {
             grid.push(cell);
         }
     }
+
     grid[index(1, 1)].type = CELL_TYPES.START;
     grid[index(N, N)].type = CELL_TYPES.FINISH;
 }
 
 function start_solve() {
-    //TODO read params from input boxes;
     if (current_state != STATES.TAKE_INPUT) return;
-    N = 20;
-    K = 20;
+    let M, timeout, populationSize, mutationProbability, keepAliveRate;
+    [N, K, M, timeout, populationSize, mutationProbability, keepAliveRate] = getValuesFromUI();
     w = 600 / (N + 2);
+    if (N < 4) K = 0;
     generate_template_maze();
     generate_random_obstacles()
-    current_state = STATES.SOLVE;
+    setState(STATES.SOLVE);
     GA = new GeneticAlgorithm({
-        mutation_probability: 0.3,
-        timeout: 999999,
-        population_size: 1000,
+        mutation_probability: mutationProbability,
+        timeout: timeout,
+        population_size: populationSize,
         fitness_function: usefull_ff2,
-        individual_length: 4 * N
+        individual_length: M,
+        keep_alive_rate: keepAliveRate
 
     });
     GA.create_first_generation();
-
-    //TODO genetik algoritma yarat ve first generasyonu yarat, arayuzu kilitle
 }
-
-start_solve();
 
 function getValuesFromUI() {
     let N = document.getElementById("maze_size").value;
@@ -227,54 +218,84 @@ function getValuesFromUI() {
     let timeout = document.getElementById("timeout").value;
     let populationSize = document.getElementById("populationSize").value;
     let mutationProbability = document.getElementById("mutationProbability").value;
-    if (isNaN(N) || isNaN(K) || isNaN(M) || isNaN(timeout) ||  isNaN(populationSize) || isNaN(mutationProbability)) {
+    let keepAliveRate = document.getElementById("keepAliveRate").value;
+    if (isNaN(N) || isNaN(K) || isNaN(M) || isNaN(timeout) ||  isNaN(populationSize) || isNaN(mutationProbability) || isNaN(keepAliveRate)) {
         alert("Please Enter Valid input");
         return;
     }
-
-    alert(N + K + M + timeout + populationSize + mutationProbability);
+    return [Number(N), Number(K), Number(M), Number(timeout), Number(populationSize), mutationProbability, keepAliveRate];
 }
+
+function setState(st) {
+    current_state = st;
+    chanceButtonAppearance();
+}
+let btn = document.getElementById("button");
 
 function solveButtonClicked() {
-    getValuesFromUI();
+    if (current_state == STATES.TAKE_INPUT) {
+        start_solve();
+    } else if (current_state == STATES.SHOW_OUTPUT) {
+        clearChart();
+        setState(STATES.TAKE_INPUT);
+    } else if (current_state == STATES.SOLVE) {
+        setState(STATES.TAKE_INPUT)
+    }
 }
 
-function makeChart() {
-    let miktar = [72, 52, 46, 35, 33];
-    let markalar = ['Samsung', 'Huawei', 'Apple', 'Xiaomi', 'Oppo'];
+function chanceButtonAppearance() {
+    let btn = document.getElementById("button");
+    btn.className = "";
+    switch (current_state) {
+        case STATES.TAKE_INPUT:
+            btn.className = "btn btn-block btn-primary";
+            btn.innerHTML = "Solve &#128640;";
+            break;
+        case STATES.SOLVE:
+            btn.className = "btn btn-block btn-danger";
+            btn.innerHTML = "Cancel &#129327;";
+            break;
+        case STATES.SHOW_OUTPUT:
+            btn.className = "btn btn-block btn-info";
+            btn.innerHTML = "Refresh &#128166;";
+            break;
+    }
+}
+
+function clearChart() {
+    let canvas = document.getElementById('chart');
+    let graphic = new Chart(canvas, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Max Score / Generation',
+                data: [],
+                backgroundColor: "rgba(24, 176, 176, 0.2)",
+                borderColor: "rgba(24, 176, 176, 1)",
+                borderWidth: 1
+            }],
+        }
+    });
+}
+
+function makeChart(score_array) {
+    let max_score = score_array;
+    let generations = Array.from(Array(max_score.length).keys())
     let canvas = document.getElementById('chart');
 
     let graphic = new Chart(canvas, {
         type: 'line',
         data: {
-            labels: markalar,
+            labels: generations,
             datasets: [{
-                label: '2018Q3 Telefon Satışı',
-                data: miktar,
-                backgroundColor: [
-                    "rgba(255, 99, 132, 0.2)",
-                    "rgba(54, 162, 235, 0.2)",
-                    "rgba(255, 206, 86, 0.2)",
-                    "rgba(75, 192, 192, 0.2)",
-                    "rgba(153, 102, 255, 0.2)"
-                ],
-                borderColor: [
-                    "rgba(255, 99, 132, 1)",
-                    "rgba(54, 162, 235, 1)",
-                    "rgba(255, 206, 86, 1)",
-                    "rgba(75, 192, 192, 1)",
-                    "rgba(153, 102, 255, 1)"
-                ],
+                label: 'Max Score / Generation',
+                data: max_score,
+                backgroundColor: "rgba(24, 176, 176, 0.2)",
+                borderColor: "rgba(24, 176, 176, 1)",
                 borderWidth: 1
             }],
 
         }
     });
 }
-
-makeChart();
-/*console.log("population: ", GA.population);
-console.log("crossover: ", GA.population[0], GA.population[1], GA.reproduce(GA.population[0], GA.population[1]));
-console.log("mutation: ", GA.mutate(GA.population[0]));
-console.log("Random Selection: ", GA.random_selection(GA.population, GA.fitness_function));
-console.log("Fitness Function: ", GA.fitness_function(GA.population[4]));*/

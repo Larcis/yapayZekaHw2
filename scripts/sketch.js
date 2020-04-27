@@ -9,7 +9,7 @@ function draw() {
     background(31);
     frameRate(30);
     if (current_state == STATES.SOLVE) {
-        let res = GA.create_next_generation();
+        let res = GA.create_next_generation(); //create next generation in each frame
         if (res) {
             console.log("RESULT:" + res);
             setState(STATES.SHOW_OUTPUT);

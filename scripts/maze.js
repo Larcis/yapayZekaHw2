@@ -8,7 +8,7 @@ let w; // Bir cell büyüklüğü
 let grid = []; // Cell array
 let GA = null; // Genetic Algorithm
 
-let colors = [
+let colors = [ //labirent cizdirmede kullanılan renkler, cell_types ile bire bir örtüşüyor
     [236, 236, 236],
     [234, 98, 39],
     [34, 40, 49],
@@ -37,7 +37,7 @@ function index(i, j) {
     if (i < 0 || j < 0 || i > N + 1 || j > N + 1) { return -1; }
     return i + j * (N + 2);
 }
-
+//labirentin her bir hücresi, koordinat ve tip bilgisi saklıyor.
 function Cell(x, y) {
     this.x = x;
     this.y = y;
@@ -56,6 +56,7 @@ function Cell(x, y) {
     }
 }
 
+//labirente rastgele 4*1 veya 1*4 engel ekler
 function generate_random_obstacles() {
     for (let i = 0; i < K; i++) {
         let x, y;
@@ -75,6 +76,7 @@ function generate_random_obstacles() {
     }
 }
 
+//verilen koordinatı verilen yöne göre düzenler
 function step(dir, xy) {
     switch (dir) {
         case "1": // Left
@@ -101,6 +103,7 @@ function manhattan(x1, y1, x2, y2) {
     return Math.abs(x1 - x2) + Math.abs(y1 - y2);
 }
 
+//engele carpana kadar atılan adım sayısını donduren fıtness fonksıyonu
 function until_wall_ff(ind) {
     let xy = [1, 1];
     let score = 1;
@@ -116,6 +119,8 @@ function until_wall_ff(ind) {
     return score;
 }
 
+//bireyin durdugu noktada, cıkısa olan öklit uzaklıgı donduren fitness fonksiyonu 
+//fitness degeri cıkısa yaklastıkca artsın diye sabit bir sayıdan cıkarılıyor.
 function euclid_ff(ind) {
     let xy = [1, 1];
     // console.log(ind);
@@ -131,6 +136,8 @@ function euclid_ff(ind) {
     return N * 2 ** (1 / 2) - euclid(...xy);
 }
 
+//atılan adım sayısı ve cıkısa uzaklıgı bırlestıren fıtness fonksıyonu
+//ayrıca vısıted kontrolu yapıyor.
 function usefull_ff(ind) {
     let xy = [1, 1];
     let currently_visited = {};
@@ -138,18 +145,19 @@ function usefull_ff(ind) {
     for (i = 0; i < ind.length; i++) {
         xy = step(ind[i], xy);
         if (grid[index(...xy)].type == CELL_TYPES.FINISH)
-            return 999999;
+            return 666666;
         if (grid[index(...xy)].type == CELL_TYPES.WALL ||
             grid[index(...xy)].type == CELL_TYPES.START ||
             currently_visited[xy[0] + "_" + xy[1]]
         ) {
-            return manhattan(...xy, 1, 1) + manhattan(...xy, N, N) / (i + 1); //N * 2 - euclid(...xy) + 3 / (i + 1);
+            return manhattan(...xy, 1, 1) / (i + 1) + 2 * N - manhattan(...xy, N, N);
         }
         currently_visited[xy[0] + "_" + xy[1]] = true;
     }
-    return manhattan(...xy, 1, 1) + manhattan(...xy, N, N) / (i + 1); //N * 2 - euclid(...xy) + 3 / (i + 1);;
+    return manhattan(...xy, 1, 1) / (i + 1) + 2 * N - manhattan(...xy, N, N);
 }
 
+//baslangıca uzaklık, adım sayısı ve cıkısa uzaklıgı hesaba katan fıtness fonksıyonu
 function usefull_ff2(ind) {
     let xy = [1, 1];
     let i = 0;
@@ -173,6 +181,8 @@ function usefull_ff2(ind) {
     return manhattan(...xy, 1, 1) / (i + 1) + 2 * N - manhattan(...xy, N, N);
 }
 
+//kenarları duvar N+2 * N*2 lik bir bos labirent üretir.
+//(1,1) i baslangıc (N, N) i bitis olarak isaretler
 function generate_template_maze() {
     grid = [];
     for (let i = 0; i <= (N + 1); i++) {
@@ -190,6 +200,7 @@ function generate_template_maze() {
     grid[index(N, N)].type = CELL_TYPES.FINISH;
 }
 
+//arayuzden gırılen parametreler ıle genetik algoritmayı tetikleyen fonksiyon
 function start_solve() {
     if (current_state != STATES.TAKE_INPUT) return;
     let M, timeout, populationSize, mutationProbability, keepAliveRate;

@@ -20,6 +20,17 @@ body {
     border-top-right-radius: 16pt 16pt;
 }
 
+@media (max-width: 500px) {
+    /* CSS that should be displayed if width is equal to or less than 800px goes here */
+    #defaultCanvas0 {
+        width: 100% !important;
+        height: 100% !important;
+    }
+    #output {
+        height: 150px !important;
+    }
+}
+
 #chart {
     max-height: 366px !important;
 }
